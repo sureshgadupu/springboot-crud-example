@@ -27,7 +27,7 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Integer id) {
-        return employeeRepository.findById(id).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource Not found") );
+        return employeeRepository.findById(id).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Employee not found with id :" + id) );
     }
 
     public Employee createEmployee(Employee employee) {
@@ -35,15 +35,9 @@ public class EmployeeService {
     }
 
     public Employee updateEmpDepartment(Integer emp_id , Integer dept_id) {
-        Employee employee = employeeRepository.getById(emp_id);
-        if(employee == null) {
-            throw new RestClientException("Employee with id "+emp_id+" not found");
-        }
+        Employee employee = employeeRepository.findById(emp_id).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Employee not found with id : "+emp_id) );
 
-        Department department = departmentRepository.getById(dept_id);
-        if(department == null) {
-            throw new RestClientException("Department with id "+dept_id+" not found");
-        }
+        Department department = departmentRepository.findById(dept_id).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Department not found with id : "+emp_id) );;
 
         employee.setDepartment(department);
         employeeRepository.save(employee);
@@ -60,10 +54,7 @@ public class EmployeeService {
     }
 
     public Employee updateEmployee(Employee employee) {
-        Employee emp = employeeRepository.getById(employee.getId());
-        if(emp == null) {
-            throw new RestClientException("Employee with id "+employee.getId()+" not found");
-        }
+        employeeRepository.findById(employee.getId()).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Employee not found with id : "+employee.getId()) );
         return employeeRepository.save(employee);
     }
 
